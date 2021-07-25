@@ -1,0 +1,101 @@
+#+TITLE: Magic Wikikasten (MWK) – The Lazy Person’s Zettelkasten System
+
+A simple Zettelkasten system designed to let you write without distraction.  Relies as much as possible on existing Emacs infrastructure and tries to be orthogonal to existing functionality.
+
+** Key features:
+1. The key distinguishing feature is that *links are created automatically*.  Specifically, links are created automatically if a string matches an existing wiki name.  Links are not written out as org syntax but are dynamically created (via Font Lock).  So if a new document is created and other documents already mention its topic, no new links need to be created by the user.  Links to the new document will magically appear.
+
+   This approach to links removes one major source of friction and frustration that I experienced when using other Zettelkasten systems.  With dynamic links, the user can focus on writing and doesn’t need to give any attention to the Zettelkasten.  One consequence of this dynamic approach to links is that links will not export as links, but that’s a feature as the content of a Zettelkasten is typically private and should not become available to readers of an individual exported document.  Bonus: Links can also be displayed in other documents that are living outside the Zettelkasten, such as LaTeX and Markdown documents, e-mails, Emacs’ inline documentation, and so on.
+
+2. *All documents belonging to a Zettelkasten are located in a single directory* (~mwk-directory~).  A Zettelkasten document is a simple org file that minimally defines a ~#+TITLE:~ property which specifies its topic.  The string in the title will be used for finding references to that document and for creating links.  Since, a title property is enough, many of your existing documents can become part of your Zettelkasten simply by copying them to the Zettelkasten directory. 
+
+3. If there are multiple synonymous ways to refer to a topic, a list of so-called *wiki names can be specified using the ~#+WIKINAMES:~ property*.  If present, only the wiki names will be used for finding references and creating links (not the title).  Wiki names are comma-separated regular expressions.  An example is the wiki name ~eye.?tracking~ to capture multiple different spellings: /eye tracking/, /eyetracking/ and /eye-tracking/.  Or ~backups?~ to capture both /backup/ and /backups/ and /Backup/ at the beginning of the sentence.  If your wiki name contains characters that have special meaning in regular expression syntax, you need to escape them, e.g., to match ~R^2~ in documents, use the wiki name ~R\^2~.
+
+4. *Three helm commands help you navigate your Zettelkasten*:
+  - The Helm command ~helm-mwk-topics~ can be used to *find existing Zettelkasten documents*.  This command can also be used to create new documents in your Zettelkasten.  Simply type the title of a new topic and hit enter.
+  - The Helm command ~helm-mwk-references~ can be used to *find back-references*, i.e. Zettelkasten documents with references to the current document.  This is the signature feature of the Zettelkasten system which gives it much of its power.
+  - The Helm command ~helm-mwk-search~ can be used for a *full-text search in your Zettelkasten*.
+
+Many features could be added to this system but most would detract from one of the main design goals: simplicity.
+
+* Architecture
+Magic Wikikasten (MWK) consists of three main components:
+1. A global minor mode that watches the Zettelkasten and keeps an up-to-date list of topics (~global-mwk-mode~).
+2. A local minor mode that creates link in the current document, which may be a Zettelkasten document or something else (~mwk-mode~).
+3. Three Helm commands for navigating your Zettelkasten (~helm-mwk-topics~), discovering connections (~helm-mwk-references~), and generally finding stuff (~helm-mwk-search~).
+
+For searching, MWK uses [[https://github.com/ggreer/the_silver_searcher][silversearcher]] which is super fast and much faster than opening and scanning files in Emacs.  As a result, this system should in principle work fine with a Zettelkasten with many files and lots of content. 
+
+* Installing MWK
+1. Magic Wikikasten uses [[https://github.com/ggreer/the_silver_searcher][silversearcher]] (the ~ag~ command) to find topics in the Zettelkasten.  Make sure it’s properly installed on your system and that Emacs can find it.
+2. MWK uses [[https://emacs-helm.github.io/helm/][Helm]] (not part of Emacs) for navigating the Zettelkasten.
+3. Finally, make sure that ~mwk.el~ is in your ~load-path~.  (MWK is currently not available via the usual package repositories.)
+
+* Configuration
+There is a single customization variable, ~mwk-directory~, that defines the directory containing documents belonging to the Zettelkasten.  A complete configuration is then as simple as this:
+
+#+BEGIN_SRC elisp :eval no
+(require 'mwk)
+
+(setq mwk-directory "/home/user/zettelkasten")
+
+(global-mwk-mode)
+#+END_SRC
+
+In addition, you might want to create some key bindings for the following commands:
+- ~helm-mwk-topics~
+- ~helm-mwk-references~
+- ~helm-mwk-search~
+- ~mwk-flash-links~
+
+* How to use MWK
+** Create a first Zettelkasten document:
+Execute ~helm-mwk-topics~, type the title of the new document, and hit enter.  Make sure you save this file after editing.
+
+Example: ~M-x helm-mwk-topics~ followed by ~My first topic RET~ creates the following new document in your Zettelkasten:
+#+BEGIN_EXAMPLE
+#+TITLE: My first topic
+#+WIKINAMES: 
+#+END_EXAMPLE
+
+When you save the document, MWK will automatically update its index of topics in your Zettelkasten.
+
+** Create a second Zettelkasten document:
+Same as above.
+
+** Open an existing Zettelkasten document:
+Same as above.
+
+** Create a reference to an existing Zettelkasten document:
+Just type a string that is matched by one of the document’s wiki names.  No need to create explicit org links.  Effectively you will create references on the fly without even thinking about it, just by writing prose.  That’s the magic of Magic Wikikasten.
+
+** Display links to Zettelkasten documents:
+Execute ~M-x mwk-flash-links~ to show transient links (3 seconds).  Alternatively, enable ~mwk-mode~ to display links permanently.  However, note that the latter causes 100% CPU load on some systems due to an unidentified font-lock issue that needs to be fixed.
+
+** Hide links to Zettelkasten documents:
+Disable ~mwk-mode~.
+
+** Find references to the current Zettelkasten document:
+Execute ~M-x helm-mwk-references~ (ideally this is bound to some key combination).
+
+** Search in all documents belonging to the Zettelkasten:
+Execute ~M-x helm-mwk-search~, and enter a string.
+
+* Specific use cases
+** You’re writing a document (e.g. a LaTeX manuscript) and need quick access to your notes about various relevant topics:
+- Activate ~mwk-mode~ and references to concepts with entries in your Zettelkasten will become links.
+- Alternatively, use ~mwk-flash-links~ to display links for just a moment during which they will be clickable.
+- Execute ~helm-mwk-topics~ to search for topic.
+
+** You figured out how to compile Emacs from source and would like to save this information for the future:
+Execute ~helm-mwk-topics~, type “Compiling Emacs”, hit enter, write down recipe in the new org file, save and done.
+
+** Integrate helm-bibtex’ and ivy-bibtex’ note-taking systems with your MWK Zettelkasten:
+Add this to your helm/ivy-bibtex configuration:
+#+BEGIN_SRC elisp
+(setq bibtex-completion-notes-path mwk-directory)
+(setq bibtex-completion-notes-template-multiple-files
+      "#+TITLE: ${author-or-editor-abbrev} (${year}): ${title}\n#+WIKINAMES: ${=key=}\n\n")
+#+END_SRC
+Then search for an article via ~helm-bibtex~ or ~ivy-bibtex~, select “Edit notes”, and a new note will be created in your Zettelkasten (or the existing note will be opened).  BibTeX keys in other documents will automatically become links to existing notes in your Zettelkasten when you activate ~mwk-mode~ or execute ~mwk-flash-links~.
+
