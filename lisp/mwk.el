@@ -144,16 +144,17 @@ The search is limited to .org files in the directory specified in `mwk-directory
     (maphash (lambda (k v) (setq candidates (cons (cons k v) candidates))) mwk-topics)
     (helm :sources (list
                     (helm-build-sync-source "Zettelkasten topics"
-                     :candidates (sort candidates (lambda (a b) (string<
-                                                                 (downcase (cdr (assoc 'title (cdr a))))
-                                                                 (downcase (cdr (assoc 'title (cdr b)))))))
+                     :candidates (sort candidates (lambda (a b)
+                                                    (file-newer-than-file-p
+                                                     (expand-file-name (car a) mwk-directory)
+                                                     (expand-file-name (car b) mwk-directory))))
                      :candidate-transformer 'mwk-topics-candidates-transformer
                      :fuzzy-match nil
                      :action (helm-make-actions
                               "Open file" (lambda (f) (find-file (expand-file-name f mwk-directory)))))
                     mwk-helm-new-file-source)
           :buffer "*helm mwk topics*")))
-
+ 
 
 ;;
 ;; Chapter 2: Global minor mode that watches the zettelkasten and
