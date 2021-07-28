@@ -203,6 +203,12 @@ topic.")
         (when value  ; We'll ignore file that don't have a title.
           (puthash file (cons (cons 'wikinames wikinames) value) mwk-topics))))))
 
+(defun mwk-turn-on-mwk-local-mode-hook ()
+  "Turn on `mwk-mode' when the current file is part of the Zettelkasten."
+  (when (string-match
+         (concat "^" (file-truename mwk-directory))
+         (file-truename buffer-file-name))
+    (mwk-mode 1)))
 
 ;;;###autoload
 (define-minor-mode global-mwk-mode
@@ -214,11 +220,22 @@ topic.")
         ;; Set up file watcher:
         (setq mwk-file-watch-descriptor
               (file-notify-add-watch mwk-directory '(change) (lambda (_) (mwk-scan-topics))))
-        (mwk-scan-topics))
+        (mwk-scan-topics)
+        (add-hook 'text-mode-hook 'mwk-turn-on-mwk-local-mode-hook)
+        ;; If we're currently in the Zettelkasten, turn on mwk-mode as well:
+        (when (string-match
+               (concat "^" (file-truename mwk-directory))
+               (file-truename buffer-file-name))
+          (mwk-mode 1)))
     ;; Remove file watcher:
     (file-notify-rm-watch mwk-file-watch-descriptor)
     (setq mwk-file-watch-descriptor nil)
-    (setq mwk-topics nil)))
+    (setq mwk-topics nil)
+    (when (string-match
+           (concat "^" (file-truename mwk-directory))
+           (file-truename buffer-file-name))
+      (mwk-mode -1))
+    (remove-hook 'text-mode-hook 'mwk-turn-on-mwk-local-mode-hook)))
 
 
 ;;
