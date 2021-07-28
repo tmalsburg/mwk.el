@@ -244,18 +244,27 @@ topic.")
 ;;
 
 (defvar-local mwk-matchers nil
-  "List of links in local buffer.")
+  "List of matchers for links in local buffer.")
 
-(defun mwk-make-link (regexp zettel-file)
-  (let ((matcher (lambda (limit)
+(defun mwk-make-link (regexp filename)
+  "Make a link to file FILENAME given where REGEXP matches.
+
+Uses font-lock for links, so the buffer is not modified."
+  (let* ((filepath (expand-file-name filename mwk-directory))
+         ;; Wikinames need to match complete words or phrases (but \\<
+         ;; and \\> are too permissive and match strings in URLs and
+         ;; org-links as well.):
+         ;; (regexp (concat "[ \t\"(]\\(\\b" regexp "\\b\\)\\([.,:;!\")][ \t]\\)?"))
+         (regexp (concat "\\b" regexp "\\b"))
+         (matcher (lambda (limit)
                    (when (re-search-forward regexp limit t)
                      (let ((map (make-sparse-keymap)))
                        (define-key map [mouse-1]
-                         (lambda () (interactive) (find-file zettel-file)))
-                       (set-text-properties
+                         (lambda () (interactive) (find-file filepath)))
+                       (add-text-properties
                         (match-beginning 0) (match-end 0)
                         `(local-map ,map mouse-face 'highlight
-                                    help-echo "mouse-1: click me"))
+                                    help-echo "mouse-1: go to topic"))
                        t)))))
     (font-lock-add-keywords nil `((,matcher (0 'link t))) t)
     (push matcher mwk-matchers)))
@@ -275,8 +284,7 @@ topic.")
   (maphash (lambda (file alist)
              (let ((wikinames (cdr (assoc 'wikinames alist))))
                (if wikinames
-                   (let* ((wikinames (split-string wikinames ", "))
-                          (wikinames (seq-map (lambda (p) (concat "\\<" p "\\>")) wikinames)))
+                   (let* ((wikinames (split-string wikinames ", ")))
                      (dolist (wn wikinames)
                        (mwk-make-link wn file)
                        (font-lock-flush)))
