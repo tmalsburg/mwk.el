@@ -12,6 +12,7 @@
 (require 'helm-grep)
 (require 'filenotify)
 (require 'cl-seq)
+(require 'org)
 
 
 ;;
@@ -62,15 +63,15 @@
   "A helm command for searching strings in the Zettelkasten.
 
 HELM-PATTERN is a pre-defined search term."
-  (setq helm-source-grep-mwk-references
-        (helm-make-source "Zettelkasten full-text search" 'helm-mwk-references-class
-          :candidates-process
-          (lambda () (helm-grep-ag-init (file-truename mwk-directory)))))
-  (helm-set-local-variable 'helm-input-idle-delay helm-grep-input-idle-delay)
-  (helm :sources 'helm-source-grep-mwk-references
-        :input helm-pattern
-        :truncate-lines helm-grep-truncate-lines
-        :buffer (format "*helm %s*" (helm-grep--ag-command))))
+  (let ((helm-source-grep-mwk-references
+         (helm-make-source "Zettelkasten full-text search" 'helm-mwk-references-class
+           :candidates-process
+           (lambda () (helm-grep-ag-init (file-truename mwk-directory))))))
+    (helm-set-local-variable 'helm-input-idle-delay helm-grep-input-idle-delay)
+    (helm :sources 'helm-source-grep-mwk-references
+          :input helm-pattern
+          :truncate-lines helm-grep-truncate-lines
+          :buffer (format "*helm %s*" (helm-grep--ag-command)))))
 
 ;;
 ;; Full test search in Zettelkasten:
@@ -120,13 +121,14 @@ The search is limited to .org files in directory specified in
     (unless (file-exists-p filename)
       (insert "#+TITLE: " title "\n#+WIKINAMES: "))))
 
-(setq mwk-helm-new-topic-source
-      (helm-build-sync-source "New topic"
-        :candidates  (list "Create ...")
-        :match       (lambda (_candidate) t)
-        :fuzzy-match nil
-        :action (helm-make-actions
-                 "Create new topic" 'mwk-helm-new-topic-action)))
+(defvar mwk-helm-new-topic-source
+  (helm-build-sync-source "New topic"
+    :candidates  (list "Create ...")
+    :match       (lambda (_candidate) t)
+    :fuzzy-match nil
+    :action (helm-make-actions
+             "Create new topic" 'mwk-helm-new-topic-action))
+  "Dummy helm source for creating new topics")
 
 (defun mwk-topics-candidates-transformer (candidates)
   "Prepare a list of topics for visual presentation in Helm.
