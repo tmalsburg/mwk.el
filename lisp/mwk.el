@@ -205,9 +205,10 @@ topic.")
 
 (defun mwk-turn-on-mwk-local-mode-hook ()
   "Turn on `mwk-mode' when the current file is part of the Zettelkasten."
-  (when (string-match
-         (concat "^" (file-truename mwk-directory))
-         (file-truename buffer-file-name))
+  (when (and (buffer-file-name)
+             (string-match
+              (concat "^" (file-truename mwk-directory))
+              (file-truename buffer-file-name)))
     (mwk-mode 1)))
 
 ;;;###autoload
