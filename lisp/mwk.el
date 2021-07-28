@@ -233,17 +233,21 @@ topic.")
         (mwk-scan-topics)
         (add-hook 'text-mode-hook 'mwk-turn-on-mwk-local-mode-hook)
         ;; If we're currently in the Zettelkasten, turn on mwk-mode as well:
-        (when (string-match
-               (concat "^" (file-truename mwk-directory))
-               (file-truename buffer-file-name))
+        (when (and (buffer-file-name)
+                   (mwk-directory)
+                   (string-match
+                    (concat "^" (file-truename mwk-directory))
+                    (file-truename buffer-file-name)))
           (mwk-mode 1)))
     ;; Remove file watcher:
     (file-notify-rm-watch mwk-file-watch-descriptor)
     (setq mwk-file-watch-descriptor nil)
     (setq mwk-topics nil)
-    (when (string-match
-           (concat "^" (file-truename mwk-directory))
-           (file-truename buffer-file-name))
+    (when (and (buffer-file-name)
+               (mwk-directory)
+               (string-match
+                (concat "^" (file-truename mwk-directory))
+                (file-truename buffer-file-name)))
       (mwk-mode -1))
     (remove-hook 'text-mode-hook 'mwk-turn-on-mwk-local-mode-hook)))
 
