@@ -144,6 +144,8 @@ CANDIDATES contains the topics."
 
 The search is limited to .org files in the directory specified in `mwk-directory'."
   (interactive)
+  (unless global-mwk-mode
+    (error "Need global-mwk-mode to be active"))
   (let ((candidates '()))
     (maphash (lambda (k v) (setq candidates (cons (cons k v) candidates))) mwk-topics)
     (helm :sources (list
