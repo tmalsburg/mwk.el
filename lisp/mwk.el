@@ -103,7 +103,7 @@ The search is limited to .org files in directory specified in
 ;; Find topics or create new ones:
 ;;
 
-(defun mwk-helm-new-file-action (_)
+(defun mwk-helm-new-topic-action (_)
   "Create a new Zettelkasten document."
   (let* ((title    helm-pattern)
          (filename (downcase title))
@@ -114,13 +114,13 @@ The search is limited to .org files in directory specified in
     (unless (file-exists-p filename)
       (insert "#+TITLE: " title "\n#+WIKINAMES: "))))
 
-(setq mwk-helm-new-file-source
-      (helm-build-sync-source "New file"
+(setq mwk-helm-new-topic-source
+      (helm-build-sync-source "New topic"
         :candidates  (list "Create ...")
         :match       (lambda (_candidate) t)
         :fuzzy-match nil
         :action (helm-make-actions
-                 "Create new file" 'mwk-helm-new-file-action)))
+                 "Create new topic" 'mwk-helm-new-topic-action)))
 
 (defun mwk-topics-candidates-transformer (candidates)
   "Prepare a list of topics for visual presentation in Helm.
