@@ -130,14 +130,14 @@ CANDIDATES contains the topics."
     (cl-loop
     for entry in candidates
     collect
-    (let* ((file      (car entry))
+    (let* ((filename  (car entry))
            (title     (cdr (assoc 'title (cdr entry)))))
       (cons
        (concat
-        (truncate-string-to-width title (- width (length file)) 0 ?\s)
+        (truncate-string-to-width title (- width (length filename)) 0 ?\s)
         " "
-        file)
-       file)))))
+        filename)
+       filename)))))
 
 (defun helm-mwk-topics ()
   "Search existing wiki topics.
@@ -190,18 +190,18 @@ topic.")
     (setq mwk-topics (make-hash-table :test 'equal))
     ;; Create hash entries for each file with title:
     (dolist (line titles)
-      (let* ((fields (split-string line ":"))
-             (file   (car fields))
-             (title  (string-trim (nth 3 fields))))
-        (puthash file (list (cons 'title title)) mwk-topics)))
+      (let* ((fields   (split-string line ":"))
+             (filename (car fields))
+             (title    (string-trim (nth 3 fields))))
+        (puthash filename (list (cons 'title title)) mwk-topics)))
     ;; Add wiki names to entries.
     (dolist (line wikinames)
       (let* ((fields     (split-string line ":"))
-             (file       (car fields))
+             (filename   (car fields))
              (wikinames  (string-trim (nth 3 fields)))
-             (value      (gethash file mwk-topics)))
-        (when value  ; We'll ignore file that don't have a title.
-          (puthash file (cons (cons 'wikinames wikinames) value) mwk-topics))))))
+             (value      (gethash filename mwk-topics)))
+        (when value  ; We'll ignore files that don't have a title.
+          (puthash filename (cons (cons 'wikinames wikinames) value) mwk-topics))))))
 
 (defun mwk-turn-on-mwk-local-mode-hook ()
   "Turn on `mwk-mode' when the current file is part of the Zettelkasten."
