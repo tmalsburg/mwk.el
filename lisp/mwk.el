@@ -280,18 +280,18 @@ Uses font-lock for links, so the buffer is not modified."
   "Update links to current topics in the zettelkasten."
   ;; Remove old links if any:
   (mwk-clear-links)
-  ;; Create new links if any:
-  (maphash (lambda (file alist)
+  ;; Create new matchers for links (if any):
+  (maphash (lambda (filename alist)
              (let ((wikinames (cdr (assoc 'wikinames alist))))
                (if wikinames
                    (let* ((wikinames (split-string wikinames ", ")))
                      (dolist (wn wikinames)
-                       (mwk-make-link wn file)
-                       (font-lock-flush)))
+                       (mwk-make-link wn filename)))
+                 ;; If no wikinames, we use the title:
                  (let ((title (cdr (assoc 'title alist))))
-                   (mwk-make-link title file)
-                   (font-lock-flush)))))
-           mwk-topics))
+                   (mwk-make-link title filename)))))
+           mwk-topics)
+  (font-lock-flush))
 
 (defun mwk-update-links-handler (_ _ _ _)
   "Update links to current topics in the zettelkasten.
