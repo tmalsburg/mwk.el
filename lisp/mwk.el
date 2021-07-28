@@ -214,7 +214,6 @@ topic.")
 (defun mwk-turn-on-mwk-local-mode-hook ()
   "Turn on `mwk-mode' when the current file is part of the Zettelkasten."
   (when (and (buffer-file-name)
-             (mwk-directory)
              (string-match
               (concat "^" (file-truename mwk-directory))
               (file-truename buffer-file-name)))
@@ -225,6 +224,9 @@ topic.")
   "A global mode that watches the Zettelkasten and keeps an up-to-date list of topics."
   :init-value nil
   :global t
+  (unless mwk-directory
+    (setq global-mwk-mode nil)
+    (error "No Zettelkasten configured"))
   (if global-mwk-mode
       (progn
         ;; Set up file watcher:
@@ -234,7 +236,6 @@ topic.")
         (add-hook 'text-mode-hook 'mwk-turn-on-mwk-local-mode-hook)
         ;; If we're currently in the Zettelkasten, turn on mwk-mode as well:
         (when (and (buffer-file-name)
-                   (mwk-directory)
                    (string-match
                     (concat "^" (file-truename mwk-directory))
                     (file-truename buffer-file-name)))
@@ -244,7 +245,6 @@ topic.")
     (setq mwk-file-watch-descriptor nil)
     (setq mwk-topics nil)
     (when (and (buffer-file-name)
-               (mwk-directory)
                (string-match
                 (concat "^" (file-truename mwk-directory))
                 (file-truename buffer-file-name)))
