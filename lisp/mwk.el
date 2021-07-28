@@ -157,8 +157,8 @@ The search is limited to .org files in the directory specified in `mwk-directory
                      :candidate-transformer 'mwk-topics-candidates-transformer
                      :fuzzy-match nil
                      :action (helm-make-actions
-                              "Open file" (lambda (f) (find-file (expand-file-name f mwk-directory)))))
-                    mwk-helm-new-file-source)
+                              "Open topic" (lambda (f) (find-file (expand-file-name f mwk-directory)))))
+                    mwk-helm-new-topic-source)
           :buffer "*helm mwk topics*")))
  
 
