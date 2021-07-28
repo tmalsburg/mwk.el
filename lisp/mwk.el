@@ -87,7 +87,7 @@ The search is limited to .org files in directory specified in
   (interactive)
   ;; If the current document is outside mwk-document, we throw an error:
   (unless (string= (file-truename default-directory) (file-truename mwk-directory))
-    (error "The current file is not in your Zettelkasten (%s)" mwk-directory))
+    (error "Current file not in your Zettelkasten (%s)" mwk-directory))
   (let* ((wikinames (cadar (org-collect-keywords '("wikinames"))))
          (wikinames (if wikinames wikinames (cadar (org-collect-keywords '("title"))))))
     (unless wikinames
