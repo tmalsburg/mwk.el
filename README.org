@@ -29,7 +29,14 @@ For searching, MWK uses [[https://github.com/ggreer/the_silver_searcher][silvers
 * Installing MWK
 1. Magic Wikikasten uses [[https://github.com/ggreer/the_silver_searcher][silversearcher]] (the ~ag~ command) to find topics in the Zettelkasten.  Make sure it’s properly installed on your system and that Emacs can find it.
 2. MWK uses [[https://emacs-helm.github.io/helm/][Helm]] (not part of Emacs) for navigating the Zettelkasten.
-3. Finally, make sure that ~mwk.el~ is in your ~load-path~.  (MWK is currently not available via the usual package repositories.)
+3. Finally, make sure that ~mwk.el~ is in your ~load-path~.
+
+MWK is currently not available via the usual package repositories but it can be installed directly from GitHub using straight.el:
+
+#+BEGIN_SRC elisp
+(straight-use-package
+ '(mwk :type git :host github :repo "tmalsburg/mwk.el"))
+#+END_SRC
 
 * Configuration
 There is a single customization variable, ~mwk-directory~, that defines the directory containing documents belonging to the Zettelkasten.  A complete configuration is then as simple as this:
@@ -39,7 +46,7 @@ There is a single customization variable, ~mwk-directory~, that defines the dire
 
 (setq mwk-directory "/home/user/zettelkasten")
 
-(global-mwk-mode)
+(global-mwk-mode 1)
 #+END_SRC
 
 In addition, you might want to create some key bindings for the following commands:
@@ -70,7 +77,7 @@ Same as above.
 Just type a string that is matched by one of the document’s wiki names.  No need to create explicit org links.  Effectively you will create references on the fly without even thinking about it, just by writing prose.  That’s the magic of Magic Wikikasten.
 
 ** Display links to Zettelkasten documents:
-Execute ~M-x mwk-flash-links~ to show transient links (3 seconds).  Alternatively, enable ~mwk-mode~ to display links permanently.  However, note that the latter causes 100% CPU load on some systems due to an unidentified font-lock issue that needs to be fixed.
+In documents belonging to your Zettelkasten, links will be displayed by default.  In other documents you can execute ~M-x mwk-flash-links~ to show links for 3 seconds (during which they are clickable).  Alternatively, enable ~mwk-mode~ to display links permanently.
 
 ** Hide links to Zettelkasten documents:
 Disable ~mwk-mode~.
