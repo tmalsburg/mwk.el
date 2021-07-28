@@ -18,8 +18,14 @@
 ;; Chapter 0: Customization variables
 ;;
 
+(defgroup mwk nil
+  "A simple Zettelkasten system."
+  :group 'text)
+
 (defcustom mwk-directory nil
-  "Path to zettelkasten directory.")
+  "Path to zettelkasten directory."
+  :group 'mwk
+  :type 'directory)
 
 
 ;;
