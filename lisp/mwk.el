@@ -1,19 +1,25 @@
 ;;; mwk.el --- Magic Wikikasten - A Zettelkasten system  -*- lexical-binding: t -*-
 
-;; Copyright (C) 2021 Titus von der Malsburg <malsburg@posteo.de>
+;; Copyright (c) 2021 Titus von der Malsburg <malsburg@posteo.de>
 ;; Author: Titus von der Malsburg <malsburg@posteo.de>
 
 ;;; Commentary:
-
+;;
 ;; See README.org for details.
 
 ;;; Code:
 
 (require 'helm-grep)
-;; (require 'helm-adaptive)
-;; (require 'helm-files)
 (require 'filenotify)
 (require 'cl-seq)
+
+
+;;
+;; Chapter 0: Customization variables
+;;
+
+(defcustom mwk-directory nil
+  "Path to zettelkasten directory.")
 
 
 ;;
@@ -23,8 +29,6 @@
 ;;
 ;; Adaptation of `helm-do-grep-ag' for our own purposes.
 ;;
-
-;;; Code:
 
 (defvar helm-mwk-history nil)
 
@@ -164,9 +168,6 @@ The search is limited to .org files in the directory specified in `mwk-directory
 ;; something happens (new file, or modified file, or deleted file).
 ;;
 
-(defcustom mwk-directory "~/Essentials/documents/zettelkasten/"
-  "Path to zettelkasten directory.")
-
 (defvar mwk-file-watch-descriptor nil
   "Watch descriptor for the zettelkasten.
 Updates list of topics when there are changes.")
@@ -185,7 +186,7 @@ topic.")
          (titles     (butlast (split-string titles    "\n")))
          (wikinames  (butlast (split-string wikinames "\n"))))
     (setq mwk-topics (make-hash-table :test 'equal))
-    ;; Crete hash entries for file with titles:
+    ;; Create hash entries for each file with title:
     (dolist (line titles)
       (let* ((fields (split-string line ":"))
              (file   (car fields))
@@ -241,13 +242,14 @@ topic.")
     (push matcher mwk-matchers)))
 
 (defun mwk-clear-links ()
+  "Remove matchers for links in local buffer."
   (dolist (link mwk-matchers)
     (font-lock-remove-keywords nil `((,link (0 'link t)))))
   (font-lock-flush)
   (setq mwk-matchers nil))
 
 (defun mwk-update-links ()
-  "Updates links to current topics in the zettelkasten."
+  "Update links to current topics in the zettelkasten."
   ;; Remove old links if any:
   (mwk-clear-links)
   ;; Create new links if any:
@@ -265,7 +267,7 @@ topic.")
            mwk-topics))
 
 (defun mwk-update-links-handler (_ _ _ _)
-  "Updates links to current topics in the zettelkasten.
+  "Update links to current topics in the zettelkasten.
 
 Wrapper around `mwk-update-links' to be used by variable
 watcher."
@@ -290,7 +292,7 @@ watcher."
     (mwk-clear-links)))
 
 (defun mwk-flash-links ()
-  "Switch on `mwk-mode' for 3 seconds to briefly show links."
+  "Display links for 3 seconds."
   (interactive)
   (mwk-mode 1)
   (let ((buf (current-buffer)))

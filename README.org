@@ -58,7 +58,7 @@ Example: ~M-x helm-mwk-topics~ followed by ~My first topic RET~ creates the foll
 #+WIKINAMES: 
 #+END_EXAMPLE
 
-When you save the document, MWK will automatically update its index of topics in your Zettelkasten.
+When you save the document, MWK will automatically update its index of topics.
 
 ** Create a second Zettelkasten document:
 Same as above.
