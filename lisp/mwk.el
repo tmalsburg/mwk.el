@@ -59,19 +59,20 @@
    (group :initform 'helm-grep)))
 
 ;; Copied from helm-grep-ag-1 with some modifications:
+(defvar helm-source-grep-mwk-references
+  (helm-make-source "Zettelkasten full-text search" 'helm-mwk-references-class
+    :candidates-process
+    (lambda () (helm-grep-ag-init (file-truename mwk-directory)))))
+
 (defun helm-mwk (helm-pattern)
   "A helm command for searching strings in the Zettelkasten.
 
 HELM-PATTERN is a pre-defined search term."
-  (let ((helm-source-grep-mwk-references
-         (helm-make-source "Zettelkasten full-text search" 'helm-mwk-references-class
-           :candidates-process
-           (lambda () (helm-grep-ag-init (file-truename mwk-directory))))))
-    (helm-set-local-variable 'helm-input-idle-delay helm-grep-input-idle-delay)
-    (helm :sources 'helm-source-grep-mwk-references
-          :input helm-pattern
-          :truncate-lines helm-grep-truncate-lines
-          :buffer (format "*helm %s*" (helm-grep--ag-command)))))
+  (helm-set-local-variable 'helm-input-idle-delay helm-grep-input-idle-delay)
+  (helm :sources 'helm-source-grep-mwk-references
+        :input helm-pattern
+        :truncate-lines helm-grep-truncate-lines
+        :buffer (format "*helm %s*" (helm-grep--ag-command))))
 
 ;;
 ;; Full test search in Zettelkasten:
