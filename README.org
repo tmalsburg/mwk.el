@@ -65,7 +65,12 @@ In addition, you might want to create some key bindings for the following comman
 - ~helm-mwk-search~: Full text search in your Zettelkasten
 - ~mwk-flash-links~: Display links to Zettelkasten topics for 3 seconds.
 
-* How to use MWK
+* Known issues
+This package is pretty fresh and probably has a number of problems.  Use at your own risk.  Known issues are:
+1. Font-lock uses case-sensitive regular expressions (wiki names) for creating links but ~helm-mwk-references~ uses case-insensitive wiki names.  The goal is to follow Emacs’ convention for searching where a regular expression is assumed to be case-insensitive when it doesn’t contain any uppercase letters, and case-sensitive otherwise.  (This way case-sensitiveness is optional in wiki names, which can greatly simplify the regular expressions needed to capture all the ways in which a topic can be referred to.)  But we’ll have to teach silversearcher to behave the same.
+2. A bunch of compiler warnings.
+
+* How to use MWK?
 ** Create a first Zettelkasten document:
 Execute ~helm-mwk-topics~, type the title of a new topic, and hit enter.  Make sure you save this file after editing.
 
