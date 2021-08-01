@@ -4,9 +4,9 @@ A simple Zettelkasten system designed to let you write without distraction.  Rel
 
 ** Key features
 - Any plain old org-document with a ~#+TITLE:~ property can be a full citizen in the Zettelkasten.  No special syntax or meta information needed.
-- The Zettelkasten is simply a directory containing org-documents, where each document corresponds to a topic.
-- Links between topics are created automagically.  No need to create and manage links manually.  No need to update them when a linked document changes.  Automatic links were the motivation to write this package.
-- No database needed.  MWK uses silversearcher (fast!) to see what’s the current state of affairs in your Zettelkasten.
+- The Zettelkasten is simply a directory containing org-documents.  Each document corresponds to a topic.
+- Links between topics are created automagically.  No need to create and manage links by hand.  No need to update them when a linked document changes.  Automatic links were the motivation for writing this package.
+- No persistent index needed.  MWK uses silversearcher (fast!) to see what’s the current state of affairs in your Zettelkasten.
 - MWK aims to be an (almost) zero-configuration solution.  The only thing that needs to be configured is the directory of your Zettelkasten.
 
 ** Comparison with [[https://www.orgroam.com/][org-roam]]
