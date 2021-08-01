@@ -2,6 +2,10 @@
 
 ;; Copyright (c) 2021 Titus von der Malsburg <malsburg@posteo.de>
 ;; Author: Titus von der Malsburg <malsburg@posteo.de>
+;; Maintainer: Titus von der Malsburg <malsburg@posteo.de>
+;; URL: https://github.com/tmalsburg/mwk.el
+;; Version: 0.1
+;; Package-Requires: ((helm "3.6.2") (cl-lib "1.0"))
 
 ;;; Commentary:
 ;;
