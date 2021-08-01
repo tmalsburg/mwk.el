@@ -100,7 +100,8 @@ The search is limited to .org files in directory specified in
          (wikinames (if wikinames wikinames (cadar (org-collect-keywords '("title"))))))
     (unless wikinames
       (error "No wiki names in this file.  Add #+TITLE: and/or #+WIKINAMES: properties"))
-    (let* ((wikinames (split-string wikinames "," t "[ \t]*"))
+    (let* ((wikinames (replace-regexp-in-string "\\\\\\([()|]\\)" "\\1" wikinames)) ; Translate to ag regexpr syntax
+           (wikinames (split-string wikinames "," t "[ \t]*"))
            (helm-pattern (mapconcat (lambda (s) (format "(\\b%s\\b)" (replace-regexp-in-string "[ \t]+" "\\\\ " s))) wikinames "|"))
            ;; Don't look for matches in the in the current file:
            (helm-grep-ag-command (format "ag --line-numbers -S --color -n --org --ignore '%s' --nogroup %%s %%s %%s"
