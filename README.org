@@ -1,42 +1,44 @@
 #+TITLE: Magic Wikikasten (MWK) – The Lazy Person’s Zettelkasten System
 
-A simple Zettelkasten system designed to let you write without distraction.  Relies as much as possible on existing Emacs infrastructure and tries to be orthogonal to existing Emacs features.
+A simple Zettelkasten system designed to let you write without distraction.  Tries to rely on existing Emacs infrastructure and to be orthogonal to existing features.
 
 ** Key features
-- Any plain old org-document with a ~#+TITLE:~ property can be a full citizen in the Zettelkasten.  No special syntax or meta information needed.
+- Any plain old org-document with a ~#+TITLE:~ property can be a full citizen in your Zettelkasten.  No special syntax or meta information needed.
 - The Zettelkasten is simply a directory containing org-documents.  Each document corresponds to a topic.
-- Links between topics are created automagically.  No need to create and manage links by hand.  No need to update them when a linked document changes.  Automatic links were the motivation for writing this package.
+- Links between topics are created automagically.  No need to create and manage links by hand.  No need to update links when their target document changes.  Automatic links were the main motivation for writing this package.
 - No persistent index needed.  MWK uses silversearcher (fast!) to see what’s the current state of affairs in your Zettelkasten.
 - MWK aims to be an (almost) zero-configuration solution.  The only thing that needs to be configured is the directory of your Zettelkasten.
 
 ** Comparison with [[https://www.orgroam.com/][org-roam]]
-Org-roam was clearly a great inspiration for this project.  However, MWK has a different focus than org-roam.  Org-roam aims to be a complete and comprehensive Zettelkasten solution that is highly configurable and extensible.  MWK, on the other hand, is intended to be simple and easy to learn (hence “the lazy person’s Zettelkasten”).  If you’d like to buy heavily into the Zettelkasten idea, org-roam is probably the better solution for you.  MWK may be a good starting point if you’d like to get your feet wet.
+While org-roam (v1) was the main inspiration for this project, MWK has a different focus.  Org-roam aims to be a complete and comprehensive Zettelkasten solution that is highly configurable and extensible.  MWK, in contrast, is intended to be simple and easy to learn (hence “the lazy person’s Zettelkasten”).  If you’d like to buy heavily into the Zettelkasten idea, org-roam might be the better solution for you.  MWK is a good low-barrier starting point if you’d like to get your feet wet with the Zettelkasten idea.
 
 ** How does it work?
-1. The key distinguishing feature is that *links are created automatically*.  Links are created automatically when a string that you type matches an existing topic’s name.  Links are not written out as org syntax but are dynamically created in Emacs (via Font Lock) and are not part of the file.  So if a new document is created and other documents already mention its topic, no new links need to be created.  Links to the new document will magically appear.  Zettelkasten links are similar to org’s [[https://orgmode.org/manual/Radio-Targets.html#Radio-Targets][radio targets]] except that Zettelkasten links work across documents and that you don’t need to update Zettelkasten links manually.  However, unlike radio targets, Zettelkasten links do not export to PDF, HTML, etc.
+1. The key distinguishing feature is that *links are created automatically*.  Links are created automatically when a string that you type matches an existing topic’s name.  Links are not written out in org syntax but are dynamically created in Emacs (via Font Lock) and are not part of the file.  So if a new document is created and other documents already mention its topic, no new links need to be created.  Links to the new document will magically appear.
 
-   This approach to links removes one major source of frustration that I experienced when using other Zettelkasten systems.  With dynamic links, the user can focus on writing and doesn’t need to give any attention to the Zettelkasten.  One consequence of this dynamic approach to links is that links will not export as links.  But that’s a feature since the content of a Zettelkasten is typically private and should not become available to readers of an individual exported document.
+   Zettelkasten links are similar to org’s [[https://orgmode.org/manual/Radio-Targets.html#Radio-Targets][radio targets]] except that Zettelkasten links work across documents and that you don’t need to update Zettelkasten links manually.  However, unlike radio targets, Zettelkasten links do not export to PDF, HTML, etc.  But that’s a feature since the content of a Zettelkasten is typically private and should not become available to readers of an individual exported document.
 
-   Bonus: Links can also be displayed in other documents that are living outside the Zettelkasten, such as LaTeX and Markdown documents, e-mails, Emacs’ inline documentation, and so on.  The content of your Zettelkasten will always be at your fingertips (if you want that).
+   Having to create links manually and explicitly was a major source of frustration for me when working with other Zettelkasten systems.  With dynamic links, the user can focus on writing and doesn’t need to give any attention to the Zettelkasten.  
 
-2. *All documents belonging to a Zettelkasten are located in a single directory* (~mwk-directory~).  A Zettelkasten document is a simple org file that minimally defines a ~#+TITLE:~ property which specifies its topic.  The string in the title will be used for finding references to that document and for creating links.  Since, a title property is enough, many of your existing documents can become part of your Zettelkasten simply by moving them to the Zettelkasten directory. 
+   Bonus: Zettelkasten links can also be displayed in other documents that are living outside the Zettelkasten, such as LaTeX and Markdown documents, e-mails, Emacs’ inline documentation, and so on.  The content of your Zettelkasten will always be at your fingertips.
 
-3. If there are multiple synonymous ways to refer to a topic, a list of so-called *wiki names can be specified using the* ~#+WIKINAMES:~ *property*.  If present, only the wiki names will be used for finding references and creating links (not the title).  Wiki names are comma-separated regular expressions .  An example is the wiki name ~eye.?tracking~ to capture multiple different spellings: /eye tracking/, /eyetracking/ and /eye-tracking/.  Or ~backups?~ to capture both /backup/ and /backups/ and /Backup/ at the beginning of the sentence.  If your wiki name contains characters that have special meaning in regular expression syntax, you need to escape them, e.g., to match ~R^2~ in documents, use the wiki name ~R\^2~.  Regular expressions are powerful, but it’s also easy to shoot yourself in the foot if you get too fancy.
+2. *All documents belonging to a Zettelkasten are located in a single directory* (~mwk-directory~).  A Zettelkasten document is a simple org file that minimally defines a ~#+TITLE:~ property which specifies its topic.  The string in the title will be used for finding references to that document and for creating links.  Since, a title property is enough, many of your existing documents can be made part of your Zettelkasten simply by moving them to the Zettelkasten directory. 
+
+3. If there are multiple synonymous ways to refer to a topic, a list of so-called *wiki names can be specified using the* ~#+WIKINAMES:~ *property*.  If present, only the wiki names will be used for finding references and creating links (not the title).  Wiki names are comma-separated regular expressions.  An example is the wiki name ~eye.?tracking~ to capture multiple different spellings: /eye tracking/, /eyetracking/ and /eye-tracking/.  Or ~backups?~ to capture both /backup/ and /backups/ and /Backup/ at the beginning of the sentence.  Wiki names are case-insensitive unless they contain uppercase letters in which case they become case-sensitive (e.g., ~Wi-Fi~).  If your wiki name contains characters that have special meaning in regular expression syntax, you need to escape them, e.g., to match ~R^2~ in documents, use the wiki name ~R\^2~.  Regular expressions are powerful, but it’s also easy to shoot yourself in the foot if you get too fancy.
 
 4. *Three helm commands help you navigate your Zettelkasten*:
   - The Helm command ~helm-mwk-topics~ can be used to *find existing topics in your Zettelkasten*.  This command can also be used to create new topics.  Simply type the title of a new topic and hit enter.
   - The Helm command ~helm-mwk-references~ can be used to *find back-references*, i.e. Zettelkasten topics with references to the current topic.  This is the signature feature of the Zettelkasten system which gives it much of its power.
   - The Helm command ~helm-mwk-search~ can be used for a *full-text search in your Zettelkasten*.
 
-Many features could be added to this system but most would detract from the main design goal: simplicity.
+Many other features could be added to this system but most would detract from the main design goal: simplicity.
 
 * Architecture
 Magic Wikikasten (MWK) consists of three main components:
-1. A global minor mode that watches the Zettelkasten and keeps an up-to-date list of topics in memory (~global-mwk-mode~).  (Unlike org-roam, MWK doesn’t store this index on disk.)
-2. A local minor mode that creates links in the current document, which may be a Zettelkasten document or something else outside the Zettelkasten (~mwk-mode~).
+1. A global minor mode, ~global-mwk-mode~, that watches the Zettelkasten and keeps an up-to-date list of topics in memory.  (Unlike org-roam, MWK doesn’t store an index on disk.)
+2. A local minor mode, ~mwk-mode~, that creates links in the current document, which may be a Zettelkasten document or something else outside the Zettelkasten.
 3. Three Helm commands for navigating your Zettelkasten (~helm-mwk-topics~), discovering connections (~helm-mwk-references~), and generally finding stuff (~helm-mwk-search~).
 
-For searching, MWK uses [[https://github.com/ggreer/the_silver_searcher][silversearcher]] which is super fast and much faster than opening and scanning files in Emacs.  As a result, this system should work fine with large Zettelkästen.
+Behind the scenes, MWK uses [[https://github.com/ggreer/the_silver_searcher][silversearcher]] for searching which is super fast and much faster than opening and scanning files in Emacs.  As a result, this MWK should work okay with large Zettelkästen containing many documents.
 
 * Installing MWK
 1. Magic Wikikasten uses [[https://github.com/ggreer/the_silver_searcher][silversearcher]] (the ~ag~ command) to scan the Zettelkasten.  On Ubuntu-like systems it can be installed via: ~sudo apt install silversearcher-ag~
@@ -66,10 +68,9 @@ In addition, you might want to create some key bindings for the following comman
 - ~mwk-flash-links~: Display links to Zettelkasten topics for 3 seconds.
 
 * Known issues
-This package is pretty fresh and probably has a number of problems.  Use at your own risk.  Known issues are:
-1. Font-lock uses case-sensitive regular expressions (wiki names) for creating links but ~helm-mwk-references~ uses case-insensitive wiki names.  The goal is to follow Emacs’ convention for searching where a regular expression is assumed to be case-insensitive when it doesn’t contain any uppercase letters, and case-sensitive otherwise.  (This way case-sensitiveness is optional in wiki names, which can greatly simplify the regular expressions needed to capture all the ways in which a topic can be referred to.)  But we’ll have to teach silversearcher to behave the same.
-2. This package does not work reliably with [[https://melpa.org/#/emojify][emojify.el]].  When links are displayed, Emacs sometimes runs with 100% CPU load.  There’s probably an incompatibility in how MWK and emojify use font-lock.
-3. A bunch of compiler warnings.
+This package is pretty fresh and like has a number of unresolved problems.  Use at your own risk.  Known issues are:
+1. This package doesn’t work reliably in conjunction with [[https://melpa.org/#/emojify][emojify.el]].  When links are displayed, Emacs sometimes runs with 100% CPU load.  There’s probably an incompatibility in how MWK and emojify use font-lock.
+2. A bunch of compiler warnings.
 
 * How to use MWK?
 ** Create a first Zettelkasten document:
