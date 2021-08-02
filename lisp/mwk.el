@@ -85,7 +85,8 @@ HELM-PATTERN is a pre-defined search term."
 (defun helm-mwk-search ()
   "Helm command for full text search in the Zettelkasten."
   (interactive)
-  (helm-mwk ""))
+  (let ((helm-grep-ag-command "ag --line-numbers -S --color -n --org --nogroup %s %s %s"))
+    (helm-mwk "")))
 
 ;;
 ;; Find (back-)references to the current topic:
