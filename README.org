@@ -10,7 +10,7 @@ A simple Zettelkasten system designed to let you write without distraction.  Rel
 - MWK aims to be an (almost) zero-configuration solution.  The only thing that needs to be configured is the directory of your Zettelkasten.
 
 ** Comparison with [[https://www.orgroam.com/][org-roam]]
-Org-roam was clearly a great inspiration for this project.  However, MWK has a different focus than org-roam.  Org-roam aims to be a complete and comprehensive Zettelkasten solution that is highly configurable and extensible.  MWK, on the other hand, is intended to be simple and easy to learn (hence “the lazy person’s Zettelkasten”), and therefore has a much narrower focus.  If you’d like to buy heavily into the Zettelkasten idea, org-roam is probably the better solution for you.  MWK may be a good starting point if you’d like to get your feet wet.
+Org-roam was clearly a great inspiration for this project.  However, MWK has a different focus than org-roam.  Org-roam aims to be a complete and comprehensive Zettelkasten solution that is highly configurable and extensible.  MWK, on the other hand, is intended to be simple and easy to learn (hence “the lazy person’s Zettelkasten”).  If you’d like to buy heavily into the Zettelkasten idea, org-roam is probably the better solution for you.  MWK may be a good starting point if you’d like to get your feet wet.
 
 ** How does it work?
 1. The key distinguishing feature is that *links are created automatically*.  Links are created automatically when a string that you type matches an existing topic’s name.  Links are not written out as org syntax but are dynamically created in Emacs (via Font Lock) and are not part of the file.  So if a new document is created and other documents already mention its topic, no new links need to be created.  Links to the new document will magically appear.
@@ -68,7 +68,8 @@ In addition, you might want to create some key bindings for the following comman
 * Known issues
 This package is pretty fresh and probably has a number of problems.  Use at your own risk.  Known issues are:
 1. Font-lock uses case-sensitive regular expressions (wiki names) for creating links but ~helm-mwk-references~ uses case-insensitive wiki names.  The goal is to follow Emacs’ convention for searching where a regular expression is assumed to be case-insensitive when it doesn’t contain any uppercase letters, and case-sensitive otherwise.  (This way case-sensitiveness is optional in wiki names, which can greatly simplify the regular expressions needed to capture all the ways in which a topic can be referred to.)  But we’ll have to teach silversearcher to behave the same.
-2. A bunch of compiler warnings.
+2. This package does not work reliably with [[https://melpa.org/#/emojify][emojify.el]].  When links are displayed, Emacs sometimes runs with 100% CPU load.  There’s probably an incompatibility in how MWK and emojify use font-lock.
+3. A bunch of compiler warnings.
 
 * How to use MWK?
 ** Create a first Zettelkasten document:
