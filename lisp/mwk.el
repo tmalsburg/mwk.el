@@ -278,15 +278,19 @@ Uses font-lock for links, so the buffer is not modified."
          ;; (regexp (concat "[ \t\"(]\\(\\b" regexp "\\b\\)\\([.,:;!\")][ \t]\\)?"))
          (regexp (concat "\\b" regexp "\\b"))
          (matcher (lambda (limit)
-                   (when (re-search-forward regexp limit t)
-                     (let ((map (make-sparse-keymap)))
-                       (define-key map [mouse-1]
-                         (lambda () (interactive) (find-file filepath)))
-                       (add-text-properties
-                        (match-beginning 0) (match-end 0)
-                        `(local-map ,map mouse-face 'highlight
-                                    help-echo "mouse-1: go to topic"))
-                       t)))))
+                    (let* (;; If uppercase letters, matcher is
+                           ;; case-sensitive, otherwise insensitive:
+                           (case-fold-search nil)
+                           (case-fold-search (if (string-match-p "[A-Z]" regexp) nil t)))
+                      (when (re-search-forward regexp limit t)
+                        (let ((map (make-sparse-keymap)))
+                          (define-key map [mouse-1]
+                            (lambda () (interactive) (find-file filepath)))
+                          (add-text-properties
+                           (match-beginning 0) (match-end 0)
+                           `(local-map ,map mouse-face 'highlight
+                                       help-echo "mouse-1: go to topic"))
+                          t))))))
     (font-lock-add-keywords nil `((,matcher (0 'link t))) t)
     (push matcher mwk-matchers)))
 
