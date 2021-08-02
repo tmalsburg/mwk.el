@@ -105,8 +105,8 @@ The search is limited to .org files in directory specified in
          (wikinames (if wikinames wikinames (cadar (org-collect-keywords '("title"))))))
     (unless wikinames
       (error "No wiki names in this file.  Add #+TITLE: and/or #+WIKINAMES: properties"))
-    (let* ((wikinames (replace-regexp-in-string "\\\\\\([()|]\\)" "\\1" wikinames)) ; Translate to ag regexpr syntax
-           (wikinames (split-string wikinames "," t "[ \t]*"))
+    (let* ((wikinames (replace-regexp-in-string "\\\\\\([()|]\\)" "\\1" wikinames)) ; Translate to ag regexpr syntax.
+           (wikinames (split-string wikinames "," t "[ \t]*"))                      ; Split wiki names.
            (helm-pattern (mapconcat (lambda (s) (format "(\\b%s\\b)" (replace-regexp-in-string "[ \t]+" "\\\\ " s))) wikinames "|"))
            ;; Don't look for matches in the in the current file:
            (helm-grep-ag-command (format "ag --line-numbers -S --color -n --org --ignore '%s' --nogroup %%s %%s %%s"
@@ -303,14 +303,15 @@ Uses font-lock for links, so the buffer is not modified."
   (mwk-clear-links)
   ;; Create new matchers for links (if any):
   (maphash (lambda (filename alist)
-             (let ((wikinames (cdr (assoc 'wikinames alist))))
-               (if wikinames
-                   (let* ((wikinames (split-string wikinames ", ")))
-                     (dolist (wn wikinames)
-                       (mwk-make-link wn filename)))
-                 ;; If no wikinames, we use the title:
-                 (let ((title (cdr (assoc 'title alist))))
-                   (mwk-make-link title filename)))))
+             (unless (string= filename (file-name-nondirectory buffer-file-name))
+               (let ((wikinames (cdr (assoc 'wikinames alist))))
+                 (if wikinames
+                     (let* ((wikinames (split-string wikinames ", ")))
+                       (dolist (wn wikinames)
+                         (mwk-make-link wn filename)))
+                   ;; If no wikinames, we use the title:
+                   (let ((title (cdr (assoc 'title alist))))
+                     (mwk-make-link title filename))))))
            mwk-topics)
   (font-lock-flush))
 
