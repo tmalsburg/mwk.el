@@ -1,16 +1,13 @@
 #+TITLE: Magic Wikikasten (MWK) – The Lazy Person’s Zettelkasten System
 
-A simple Zettelkasten system designed to let you write without distraction.  Tries to rely on existing Emacs infrastructure and to be orthogonal to existing features.
+A simple and low-barrier Zettelkasten system designed to let you write without distraction.
 
 ** Key features
 - Any plain old org-document with a ~#+TITLE:~ property can be a full citizen in your Zettelkasten.  No special syntax or meta information needed.
 - The Zettelkasten is simply a directory containing org-documents.  Each document corresponds to a topic.
-- Links between topics are created automagically.  No need to create and manage links by hand.  No need to update links when their target document changes.  Automatic links were the main motivation for writing this package.
+- Links between topics are created automagically.  No need to create and manage links by hand.  No need to update links when their target document changes.
 - No persistent index needed.  MWK uses silversearcher (fast!) to see what’s the current state of affairs in your Zettelkasten.
-- MWK aims to be an (almost) zero-configuration solution.  The only thing that needs to be configured is the directory of your Zettelkasten.
-
-** Comparison with [[https://www.orgroam.com/][org-roam]]
-While org-roam (v1) was the main inspiration for this project, MWK has a different focus.  Org-roam aims to be a complete and comprehensive Zettelkasten solution that is highly configurable and extensible.  MWK, in contrast, is intended to be simple and easy to learn (hence “the lazy person’s Zettelkasten”).  If you’d like to buy heavily into the Zettelkasten idea, org-roam might be the better solution for you.  MWK is a good low-barrier starting point if you’d like to get your feet wet with the Zettelkasten idea.
+- MWK aims to be an (almost) zero-configuration solution.  The only thing that needs to be configured is the location of your Zettelkasten.
 
 ** How does it work?
 1. The key distinguishing feature is that *links are created automatically*.  Links are created automatically when a string that you type matches an existing topic’s name.  Links are not written out in org syntax but are dynamically created in Emacs (via Font Lock) and are not part of the file.  So if a new document is created and other documents already mention its topic, no new links need to be created.  Links to the new document will magically appear.
@@ -39,6 +36,9 @@ Magic Wikikasten (MWK) consists of three main components:
 3. Three Helm commands for navigating your Zettelkasten (~helm-mwk-topics~), discovering connections (~helm-mwk-references~), and generally finding stuff (~helm-mwk-search~).
 
 Behind the scenes, MWK uses [[https://github.com/ggreer/the_silver_searcher][silversearcher]] for searching which is super fast and much faster than opening and scanning files in Emacs.  As a result, this MWK should work okay with large Zettelkästen containing many documents.
+
+** Comparison with [[https://www.orgroam.com/][org-roam]]
+While org-roam (v1) was the main inspiration for this project, MWK has a different focus.  Org-roam aims to be a complete and comprehensive Zettelkasten solution that is highly configurable and extensible.  MWK, in contrast, is intended to be simple and easy to learn (hence “the lazy person’s Zettelkasten”).  If you’d like to buy heavily into the Zettelkasten idea, org-roam might be the better solution for you.  MWK is a good low-barrier starting point if you’d like to get your feet wet with the Zettelkasten idea.
 
 * Installing MWK
 1. Magic Wikikasten uses [[https://github.com/ggreer/the_silver_searcher][silversearcher]] (the ~ag~ command) to scan the Zettelkasten.  On Ubuntu-like systems it can be installed via: ~sudo apt install silversearcher-ag~
