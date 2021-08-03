@@ -64,19 +64,15 @@
 
 ;; Copied from helm-grep-ag-1 with some modifications:
 (defvar helm-source-grep-mwk-references
-  (helm-make-source "Zettelkasten full-text search" 'helm-mwk-references-class
+  (helm-make-source "Zettelkasten back-references" 'helm-mwk-references-class
     :candidates-process
     (lambda () (helm-grep-ag-init (file-truename mwk-directory)))))
 
-(defun helm-mwk (helm-pattern)
-  "A helm command for searching strings in the Zettelkasten.
-
-HELM-PATTERN is a pre-defined search term."
-  (helm-set-local-variable 'helm-input-idle-delay helm-grep-input-idle-delay)
-  (helm :sources 'helm-source-grep-mwk-references
-        :input helm-pattern
-        :truncate-lines helm-grep-truncate-lines
-        :buffer (format "*helm %s*" (helm-grep--ag-command))))
+;; Copied from helm-grep-ag-1 with some modifications:
+(defvar helm-source-grep-mwk-search
+  (helm-make-source "Zettelkasten full-text search" 'helm-mwk-references-class
+    :candidates-process
+    (lambda () (helm-grep-ag-init (file-truename mwk-directory)))))
 
 ;;
 ;; Full test search in Zettelkasten:
@@ -86,7 +82,10 @@ HELM-PATTERN is a pre-defined search term."
   "Helm command for full text search in the Zettelkasten."
   (interactive)
   (let ((helm-grep-ag-command "ag --line-numbers -S --color -n --org --nogroup %s %s %s"))
-    (helm-mwk "")))
+    (helm-set-local-variable 'helm-input-idle-delay helm-grep-input-idle-delay)
+    (helm :sources 'helm-source-grep-mwk-search
+          :truncate-lines helm-grep-truncate-lines
+          :buffer (format "*helm %s*" (helm-grep--ag-command)))))
 
 ;;
 ;; Find (back-)references to the current topic:
@@ -111,7 +110,11 @@ The search is limited to .org files in directory specified in
            ;; Don't look for matches in the in the current file:
            (helm-grep-ag-command (format "ag --line-numbers -S --color -n --org --ignore '%s' --nogroup %%s %%s %%s"
                                          (file-name-nondirectory buffer-file-name))))
-      (helm-mwk helm-pattern))))
+      (helm-set-local-variable 'helm-input-idle-delay helm-grep-input-idle-delay)
+      (helm :sources 'helm-source-grep-mwk-references
+            :input helm-pattern
+            :truncate-lines helm-grep-truncate-lines
+            :buffer (format "*helm %s*" (helm-grep--ag-command))))))
 
 ;;
 ;; Find topics or create new ones:
