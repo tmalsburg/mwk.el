@@ -81,7 +81,7 @@
 (defun helm-mwk-search ()
   "Helm command for full text search in the Zettelkasten."
   (interactive)
-  (let ((helm-grep-ag-command "ag --line-numbers -S --color -n --org --nogroup %s %s %s"))
+  (let ((helm-grep-ag-command "ag --line-numbers -S --nocolor -n --org --nogroup %s %s %s"))
     (helm-set-local-variable 'helm-input-idle-delay helm-grep-input-idle-delay)
     (helm :sources 'helm-source-grep-mwk-search
           :truncate-lines helm-grep-truncate-lines
@@ -108,7 +108,7 @@ The search is limited to .org files in directory specified in
            (wikinames (split-string wikinames "," t "[ \t]*"))                      ; Split wiki names.
            (helm-pattern (mapconcat (lambda (s) (format "(\\b%s\\b)" (replace-regexp-in-string "[ \t]+" "\\\\ " s))) wikinames "|"))
            ;; Don't look for matches in the in the current file:
-           (helm-grep-ag-command (format "ag --line-numbers -S --color -n --org --ignore '%s' --nogroup %%s %%s %%s"
+           (helm-grep-ag-command (format "ag --line-numbers -S --nocolor -n --org --ignore '%s' --nogroup %%s %%s %%s"
                                          (file-name-nondirectory buffer-file-name))))
       (helm-set-local-variable 'helm-input-idle-delay helm-grep-input-idle-delay)
       (helm :sources 'helm-source-grep-mwk-references
