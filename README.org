@@ -9,6 +9,13 @@ A simple and low-barrier Zettelkasten system designed to let you write without d
 - No persistent index needed.  MWK uses silversearcher (fast!) to see what’s the current state of affairs in your Zettelkasten.
 - MWK aims to be an (almost) zero-configuration solution.  The only thing that needs to be configured is the location of your Zettelkasten.
 
+* Status
+This software is quite young and still a bit rough around the edges.  However, it’s also feature-complete (for my taste at least) and ready for daily use.
+
+*Known issues:*
+1. MWK doesn’t work reliably in conjunction with [[https://melpa.org/#/emojify][emojify.el]].  When links are displayed, Emacs sometimes runs with 100% CPU load.  There’s probably an incompatibility in how MWK and emojify use font-lock.
+2. A bunch of compiler warnings.
+
 ** How does it work?
 1. The key distinguishing feature is that *links are created automatically*.  Links are created automatically when a string that you type matches an existing topic’s name.  Links are not written out in org syntax but are dynamically created in Emacs (via Font Lock) and are not part of the file.  So if a new document is created and other documents already mention its topic, no new links need to be created.  Links to the new document will magically appear.
 
@@ -18,7 +25,7 @@ A simple and low-barrier Zettelkasten system designed to let you write without d
 
    Bonus: Zettelkasten links can also be displayed in other documents that are living outside the Zettelkasten, such as LaTeX and Markdown documents, e-mails, Emacs’ inline documentation, and so on.  The content of your Zettelkasten will always be at your fingertips.
 
-2. *All documents belonging to a Zettelkasten are located in a single directory* (~mwk-directory~).  A Zettelkasten document is a simple org file that minimally defines a ~#+TITLE:~ property which specifies its topic.  The string in the title will be used for finding references to that document and for creating links.  Since, a title property is enough, many of your existing documents can be made part of your Zettelkasten simply by moving them to the Zettelkasten directory. 
+2. *All documents belonging to a Zettelkasten are located in a single directory* (~mwk-directory~).  A Zettelkasten document is a simple org file that minimally defines a ~#+TITLE:~ property which specifies its topic.  The string in the title will be used for finding references to that document and for creating links.  Since a title property is enough, many of your existing documents can become part of your Zettelkasten simply by being copied to the Zettelkasten directory. 
 
 3. If there are multiple synonymous ways to refer to a topic, a list of so-called *wiki names can be specified using the* ~#+WIKINAMES:~ *property*.  If present, only the wiki names will be used for finding references and creating links (not the title).  Wiki names are comma-separated regular expressions.  An example is the wiki name ~eye.?tracking~ to capture multiple different spellings: /eye tracking/, /eyetracking/ and /eye-tracking/.  Or ~backups?~ to capture both /backup/ and /backups/ and /Backup/ at the beginning of the sentence.  Wiki names are case-insensitive unless they contain uppercase letters in which case they become case-sensitive (e.g., ~Wi-Fi~).  If your wiki name contains characters that have special meaning in regular expression syntax, you need to escape them, e.g., to match ~R^2~ in documents, use the wiki name ~R\^2~.  Regular expressions are powerful, but it’s also easy to shoot yourself in the foot if you get too fancy.
 
@@ -66,11 +73,6 @@ In addition, you might want to create some key bindings for the following comman
 - ~helm-mwk-references~: Searches for back-references, i.e. references to the current topic
 - ~helm-mwk-search~: Full text search in your Zettelkasten
 - ~mwk-flash-links~: Display links to Zettelkasten topics for 3 seconds.
-
-* Known issues
-This package is pretty fresh and like has a number of unresolved problems.  Use at your own risk.  Known issues are:
-1. This package doesn’t work reliably in conjunction with [[https://melpa.org/#/emojify][emojify.el]].  When links are displayed, Emacs sometimes runs with 100% CPU load.  There’s probably an incompatibility in how MWK and emojify use font-lock.
-2. A bunch of compiler warnings.
 
 * How to use MWK?
 ** Create a first Zettelkasten document:
