@@ -75,7 +75,7 @@
     (lambda () (helm-grep-ag-init (file-truename mwk-directory)))))
 
 ;;
-;; Full test search in Zettelkasten:
+;; Full text search in Zettelkasten:
 ;;
 
 (defun helm-mwk-search ()
@@ -122,7 +122,7 @@ The search is limited to .org files in directory specified in
 
 (defun mwk-helm-new-topic-action (_)
   "Create a new Zettelkasten document."
-  (let* ((title    helm-pattern)
+  (let* ((title    helm-last-query)
          (filename (downcase title))
          (filename (replace-regexp-in-string "[ \t]" "_" filename))
          (filename (concat filename ".org"))
@@ -193,7 +193,7 @@ The search is limited to .org files in the directory specified in `mwk-directory
 Updates list of topics when there are changes.")
 
 (defvar mwk-topics nil
-  "Alist containing currently known topics.
+  "Hashmap containing currently known topics.
 Each entry's key is the path of the topic's org-file and the
 value is the regular expression for finding references to the
 topic.")
